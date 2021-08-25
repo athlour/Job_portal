@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: Job Portal
+servers:
+  - url: 'http://127.0.0.1:5000/'
+
+paths:
+    /job_locations:
+        get:
+            summary: ''
+            operationId: list_locations
+            tags:
+                - list
+                - locations
+            responses:
+                '200':
+                    description: 'Sample response: list of job Location'
+                    headers:
+                        x-next:
+                            description: A link to the next page of response
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Jobs_locations'
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /job_category:
+        get:
+            summary: ''
+            operationId: list_category
+            tags:
+                - list
+                - Cateory
+            responses:
+                '200':
+                    description: 'Sample response: list of jobs Cateory'
+                    headers:
+                        x-next:
+                            description: A link to the next page of response
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Jobs_category'
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+
+    /jobs:
+        get:
+            summary: ''
+            operationId: all_jobs
+            tags:
+                - /jobs
+            parameters:
+                - name: by
+                  in: query
+                  required: true
+                  description: By Location / Cateory / Status
+                  schema:
+                      type: string
+                      format: string
+                - name: values
+                  in: query
+                  required: true
+                  description: provide the values
+                  schema:
+                      type: string
+                      format: string
+            responses:
+                '200':
+                    description: 'Sample response: List of Jobs'
+                    headers:
+                        x-next:
+                            description: A link to the next page of response
+                            schema:
+                                type: string
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                $ref: '#/components/schemas/Job_resource'
+
+                default:
+                    description: Unexpected error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Jobs_category:
+      type: object
+      properties:
+          ok:
+              type: boolean
+          found:
+              type: integer
+          Location:
+              type: object
+    Jobs_locations:
+      type: object
+      properties:
+          ok:
+              type: boolean
+          found:
+              type: integer
+          Cateory:
+              type: object
+
+    Job_resource:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        found:
+            type: integer
+            format: int32
+        resource:
+            type: object
+            properties:
+                Job_id:
+                    $ref: '#/components/schemas/Job'
+    Job:
+      type: object
+      required:
+        - Date_posted
+        - Job_Code
+        - Job_Title
+        - Job_Category
+        - Location
+        - Experience
+        - Qualifications
+        - KRA
+        - Employment_type
+        - Salary
+        - Status
+      properties:
+        Date_posted:
+          type: string
+          format: date
+        Job_Code:
+            type: string
+        Job_Title:
+            type: string
+        Job_Category:
+            type: string
+        Location:
+            type: string
+        Experience:
+            type: string
+        Qualifications:
+            type: string
+        KRA:
+            type: string
+        Employment_type:
+            type: string
+        Salary:
+            type: string
+        Status:
+            type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+security:
+  - BasicAuth: []
